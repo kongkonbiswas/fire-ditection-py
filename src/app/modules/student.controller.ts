@@ -1,24 +1,18 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
-// import studentValidationSchema from './student.validation';
-// import { z } from 'zod'
-import studentValidationSchema from './student.validation';
+import studentValidationSchema from './student.zod.validation';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
     // creating a schema validation using Zod
     const zodParsedData = studentValidationSchema.parse(studentData);
-    // const studentValidationSchema = z.object({
-    //   id: z.string(),
-    //   name: z.object({
-    //     firstName: z.string().max(20, { message: 'First Name can not be more than 20 characters' })
-    // })
+    // creating a schema validation using Joi
     // const { student: studentData } = req.body;
     // data validation using joi
     // const { error, value } = studentValidationSchema.validate(studentData);
 
-    // will cal service function to send this data
+    // will call service function to send this data
     const result = await StudentServices.createStudentIntoDB(zodParsedData);
 
     // console.log({ error }, { value });
@@ -67,10 +61,10 @@ const getSingleStudent = async (req: Request, res: Response) => {
       message: 'Student is found successfully',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong. Please try again.',
+      message: err.message || 'Something went wrong. Please try again.',
       error: err,
     });
   }
