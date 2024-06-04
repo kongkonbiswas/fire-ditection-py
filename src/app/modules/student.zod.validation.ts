@@ -51,6 +51,7 @@ const localGuardianValidationSchema = z.object({
 // Define the Student schema
 const studentValidationSchema = z.object({
   id: z.string().nonempty({ message: 'ID is required' }),
+  password: z.string().max(20),
   name: userNameValidationSchema,
   gender: z
     .enum(['male', 'female', 'other'], {
@@ -83,6 +84,7 @@ const studentValidationSchema = z.object({
   localGuardian: localGuardianValidationSchema,
   profileImag: z.string().optional(),
   isActive: z.enum(['active', 'blocked']).default('active'),
+  isDeleted: z.boolean(),
 });
 
 export default studentValidationSchema;
