@@ -1,25 +1,34 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await StudentServices.getAllStudentsFromDB();
 
     res.status(200).json({
       success: true,
-      message: 'Students is successfully retrieved',
+      message: 'Students is retrieved successfully.',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong. Please try again.',
-      error: err,
-    });
+  } catch (err) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: err.message || 'Something went wrong. Please try again.',
+    //   error: err,
+    // });
+    next(err); // commented line work just using next() which applying the below error also and for using this function you don't need to declare the err type example (err: any)
   }
 };
 
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params;
 
@@ -30,16 +39,21 @@ const getSingleStudent = async (req: Request, res: Response) => {
       message: 'Student is found successfully',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong. Please try again.',
-      error: err,
-    });
+  } catch (err) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: err.message || 'Something went wrong. Please try again.',
+    //   error: err,
+    // });
+    next(err);
   }
 };
 
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params;
 
@@ -50,12 +64,13 @@ const deleteStudent = async (req: Request, res: Response) => {
       message: 'Student is deleted successfully',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong. Please try again.',
-      error: err,
-    });
+  } catch (err) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: err.message || 'Something went wrong. Please try again.',
+    //   error: err,
+    // })
+    next(err);
   }
 };
 
