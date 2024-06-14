@@ -49,42 +49,45 @@ const localGuardianValidationSchema = z.object({
 });
 
 // Define the Student schema
-const studentValidationSchema = z.object({
-  id: z.string().nonempty({ message: 'ID is required' }),
-  password: z.string().max(20),
-  name: userNameValidationSchema,
-  gender: z
-    .enum(['male', 'female', 'other'], {
-      invalid_type_error: 'Gender is required',
-      required_error: 'Gender is required',
-    })
-    .refine((val) => ['male', 'female', 'other'].includes(val), {
-      message:
-        "{#value} is not valid. The gender of the student can be either 'Male', 'Female', or 'Other'.",
+export const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z
+        .enum(['male', 'female', 'other'], {
+          invalid_type_error: 'Gender is required',
+          required_error: 'Gender is required',
+        })
+        .refine((val) => ['male', 'female', 'other'].includes(val), {
+          message:
+            "{#value} is not valid. The gender of the student can be either 'Male', 'Female', or 'Other'.",
+        }),
+      dateOfBirth: z.date().optional(),
+      email: z
+        .string()
+        .email({ message: '{#value} is not a valid email' })
+        .nonempty({ message: 'Email is required' }),
+      contactNo: z.string().nonempty({ message: 'Contact Number is required' }),
+      emergencyContactNo: z
+        .string()
+        .nonempty({ message: 'Emergency Contact Number is required' }),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z
+        .string()
+        .nonempty({ message: 'Present Address is required' }),
+      permanentAddress: z
+        .string()
+        .nonempty({ message: 'Permanent Address is required' }),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      profileImag: z.string().optional(),
     }),
-  dateOfBirth: z.string().optional(),
-  email: z
-    .string()
-    .email({ message: '{#value} is not a valid email' })
-    .nonempty({ message: 'Email is required' }),
-  contactNo: z.string().nonempty({ message: 'Contact Number is required' }),
-  emergencyContactNo: z
-    .string()
-    .nonempty({ message: 'Emergency Contact Number is required' }),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z
-    .string()
-    .nonempty({ message: 'Present Address is required' }),
-  permanentAddress: z
-    .string()
-    .nonempty({ message: 'Permanent Address is required' }),
-  guardian: guardianValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  profileImag: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean(),
+  }),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};
